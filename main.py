@@ -11,7 +11,7 @@ pygame.init()
 # Constants
 WIDTH = 800
 HEIGHT = 600
-FPS = 60
+FPS = 30
 
 WHITE = (255, 255, 255)
 LIGHT_BLUE = (135, 206, 250)
@@ -21,12 +21,13 @@ BLACK = (0, 0, 0)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("My Pygame Game")
 
-roadNetwork = RoadNetwork([{"entrance": 0,"exit": 100}],[{"entrance": 101,"exit": 5},{"entrance": 102,"exit": 6},{"entrance": 103,"exit": 7}],[Road([0,290],[390,20],"east", 0, 10, 100),Road([390,0],[20,290],"north", 10, 5, 101),Road([410,290],[390,20],"east", 10, 6, 102),Road([390,310],[20,290],"south", 10, 7, 103)],[Intersection([390,290], [20,20], "4-way", [100], [101,102,103], 10)])
+roadNetwork = RoadNetwork([{"entrance": 0,"exit": 100},{"entrance": 1,"exit": 102}],[{"entrance": 101,"exit": 5},{"entrance": 103,"exit": 6}],[Road([0,290],[440,20],"east", 0, 10, 100),Road([440,0],[20,290],"north", 10, 5, 101),Road([460,290],[340,20],"west", 1, 10, 102),Road([440,310],[20,290],"south", 10, 6, 103)],[Intersection([440,290], [20,20], "4-way", [100,102], [101,103], 10)])
 cars = []
 
 def main():
     clock = pygame.time.Clock()
     running = True
+    carIdCount = 0
 
     while running:
         clock.tick(FPS)
@@ -38,7 +39,8 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.key == pygame.K_SPACE:
-                    cars.append(Car(roadNetwork))
+                    cars.append(Car(roadNetwork, carIdCount))
+                    carIdCount += 1
 
         updateCars()
 
@@ -56,11 +58,26 @@ def draw():
 
 def updateCars():
     for i,car in enumerate(cars):
-        car.move()
+        usedIntersections = findUsedIntersections()
+        car.move(cars,usedIntersections)
         if(car.pathIndex > len(car.path["path"])-1):
             cars.pop(i)
-    
 
+def findUsedIntersections():
+    usedIntersections = []
+    for i,intersection in enumerate(roadNetwork.intersections):
+        for i,car in enumerate(cars):
+            if(rects_overlap(car.pos, car.size, intersection.pos, intersection.size)):
+                usedIntersections.append([intersection.id, car.id])
+    return usedIntersections
+
+def rects_overlap(pos1, size1, pos2, size2):
+    return (
+        pos1[0] < pos2[0] + size2[0] and
+        pos1[0] + size1[0] > pos2[0] and
+        pos1[1] < pos2[1] + size2[1] and
+        pos1[1] + size1[1] > pos2[1]
+    )
 
 if __name__ == "__main__":
     main()

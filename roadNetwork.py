@@ -19,7 +19,7 @@ class RoadNetwork:
     def createPaths(self):
         paths = []
         entrancesAndExits = []
-        for i in range(1000):
+        for i in range(100000):
             path = self.createPath()
             if(not([path["entrance"],path["exit"]] in entrancesAndExits)):
                 paths.append(path)
