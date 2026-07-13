@@ -1,6 +1,6 @@
 import pygame
 
-GREY = (90, 90, 90)
+LIGHTER_GREY = (110,110,110)
 
 class Intersection:
     def __init__(self, pos, size, type, entrances, exits, id):
@@ -12,4 +12,4 @@ class Intersection:
         self.id = id
 
     def draw(self, screen):
-        pygame.draw.rect(screen, GREY, pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[1]))
+        pygame.draw.rect(screen, LIGHTER_GREY, pygame.Rect(self.pos[0],self.pos[1],self.size[0],self.size[1]))

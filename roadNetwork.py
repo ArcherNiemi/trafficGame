@@ -3,18 +3,21 @@ import random
 #id: 0-4 are entrances, id: 5-9 are exits, id: 10-99 are intersections and id: 100+ are roads
 
 class RoadNetwork:
-    def __init__(self, entrances, exits, roads, intersections):
+    def __init__(self, entrances=[], exits=[], roads=[], intersections=[]):
         self.entrances = entrances
         self.exits = exits
         self.roads = roads
         self.intersections = intersections
-        self.paths = self.createPaths()
+        self.paths = []
 
     def draw(self, screen):
         for i,road in enumerate(self.roads):
             road.draw(screen)
         for i,intersection in enumerate(self.intersections):
             intersection.draw(screen)
+
+    def initialiseNetworkPaths(self):
+        self.paths = self.createPaths()
 
     def createPaths(self):
         paths = []
@@ -32,7 +35,8 @@ class RoadNetwork:
         pathPart = self.getId(entrance["exit"])
         path = []
         currentId = entrance["exit"]
-        while(not(currentId >= 5 and currentId <= 9)):
+        count = 0
+        while(not(currentId >= 5 and currentId <= 9) and count < 100):
             path.append(pathPart)
             currentId = pathPart.id
             if(currentId >= 100):
@@ -42,6 +46,7 @@ class RoadNetwork:
                     pathPart = self.getId(pathPart.exit)
             else:
                 pathPart = self.getId(getRandomIndex(pathPart.exits))
+            count += 1
         return {"path": path, "entrance": entrance["entrance"], "exit": currentId}
 
 

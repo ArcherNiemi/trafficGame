@@ -3,11 +3,11 @@ import pygame
 GREY = (90, 90, 90)
 
 class Road:
-    def __init__(self, pos, size, direction, enterance, exit, id):
+    def __init__(self, pos, size, direction, entrance, exit, id):
         self.pos = pos
         self.size = size
         self.direction = direction
-        self.enterance = enterance
+        self.entrance = entrance
         self.exit = exit
         self.id = id
 
